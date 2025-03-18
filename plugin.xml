@@ -52,7 +52,8 @@
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <!-- autorun after the app APK is updated -->
-            <receiver android:name="jk.cordova.plugin.kiosk.MyPackageReplacedEventReceiver">
+            <receiver android:name="jk.cordova.plugin.kiosk.MyPackageReplacedEventReceiver"
+              android:exported="true"> <!-- Mod Android 12 -->
                 <intent-filter>
                     <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 </intent-filter>
