@@ -97,28 +97,30 @@ public class KioskActivity extends CordovaActivity {
         // super.finish();
     }
 
-    // http://www.andreas-schrade.de/2015/02/16/android-tutorial-how-to-create-a-kiosk-mode-in-android/
+    // Mod che evita il crash
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(!hasFocus) {
-            System.out.println("Focus lost - closing system dialogs");
-            
-            Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-            sendBroadcast(closeDialog);
-            
-            ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-            am.moveTaskToFront(getTaskId(), ActivityManager.MOVE_TASK_WITH_HOME);
-            
-            // sometime required to close opened notification area
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask(){
-                public void run() {
-                    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-                    sendBroadcast(closeDialog);
+
+        if (!hasFocus) {
+            System.out.println("Focus lost - bringing task to front");
+
+            ActivityManager am =
+                (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+            if (am != null) {
+                try {
+                    am.moveTaskToFront(
+                        getTaskId(),
+                        ActivityManager.MOVE_TASK_WITH_HOME
+                    );
+                } catch (Exception e) {
+                    // Evita crash su device / versioni particolari
+                    e.printStackTrace();
                 }
-            }, 500); // 0.5 second
+            }
         }
     }
+
 }
 
